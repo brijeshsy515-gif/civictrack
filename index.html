@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicTrack - Smart Civic Issue Reporting</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: linear-gradient(135deg, #071b33, #087f5b);
+            color: white;
+            padding: 20px 7%;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #51f0ae;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .hero {
+            padding: 70px 0;
+            max-width: 850px;
+        }
+
+        .hero h1 {
+            font-size: clamp(38px, 7vw, 65px);
+            line-height: 1.05;
+            margin: 20px 0;
+        }
+
+        .hero h1 span {
+            color: #51f0ae;
+        }
+
+        .hero p {
+            color: #d8e7e2;
+            line-height: 1.7;
+            max-width: 650px;
+        }
+
+        .hero button {
+            margin-top: 25px;
+            padding: 14px 22px;
+            border: 0;
+            border-radius: 10px;
+            background: #51f0ae;
+            color: #062b20;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .06);
+        }
+
+        .card h2 {
+            font-size: 30px;
+            margin: 10px 0;
+        }
+
+        .card small {
+            color: #718096;
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d7dee8;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit {
+            width: 100%;
+            margin-top: 18px;
+            padding: 13px;
+            border: 0;
+            border-radius: 9px;
+            background: #087f5b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .toolbar input {
+            flex: 1;
+        }
+
+        .issue {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #087f5b;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, .06);
+        }
+
+        .issue-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .issue h3 {
+            margin: 12px 0 7px;
+        }
+
+        .issue p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e7f8f0;
+            color: #087f5b;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #fff3cd;
+            color: #946200;
+        }
+
+        .resolved {
+            background: #d9f7e8;
+            color: #087f5b;
+        }
+
+        .progress {
+            background: #dcecff;
+            color: #1769aa;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 30px;
+            text-align: center;
+            background: #071b33;
+            color: white;
+        }
+
+        @media(max-width:850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:500px) {
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            nav a {
+                display: none;
+            }
+
+            .hero {
+                padding: 45px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <nav>
+            <div class="logo">Civic<span>Track</span> 🏙️</div>
+
+            <div>
+                <a href="#report">Report</a>
+                <a href="#issues">Issues</a>
+            </div>
+        </nav>
+
+        <div class="hero">
+
+            <div>🚀 SMART CIVIC ISSUE REPORTING</div>
+
+            <h1>
+                Make Your City
+                <span>Better.</span>
+            </h1>
+
+            <p>
+                CivicTrack helps citizens report potholes, garbage,
+                broken streetlights, water problems and other public
+                issues — and track their progress transparently.
+            </p>
+
+            <button onclick="document.getElementById('report').scrollIntoView()">
+                Report an Issue →
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="container">
+
+        <section class="stats">
+
+            <div class="card">
+                <small>📋 Total Reports</small>
+                <h2 id="total">0</h2>
+            </div>
+
+            <div class="card">
+                <small>⏳ Pending</small>
+                <h2 id="pending">0</h2>
+            </div>
+
+            <div class="card">
+                <small>🔧 In Progress</small>
+                <h2 id="progress">0</h2>
+            </div>
+
+            <div class="card">
+                <small>✅ Resolved</small>
+                <h2 id="resolved">0</h2>
+            </div>
+
+        </section>
+
+
+        <div class="main">
+
+            <!-- REPORT FORM -->
+
+            <section class="card" id="report">
+
+                <h2>📢 Report a Civic Issue</h2>
+
+                <form id="issueForm">
+
+                    <label>Your Name</label>
+                    <input id="name" type="text" placeholder="Enter your name" required>
+
+                    <label>Issue Category</label>
+
+                    <select id="category" required>
+
+                        <option value="">Select category</option>
+                        <option>🕳️ Pothole</option>
+                        <option>🗑️ Garbage</option>
+                        <option>💡 Streetlight</option>
+                        <option>🚰 Water Problem</option>
+                        <option>🚦 Traffic</option>
+                        <option>🌳 Public Space</option>
+                        <option>⚠️ Other</option>
+
+                    </select>
+
+                    <label>Location</label>
+
+                    <input id="location" type="text" placeholder="Example: MG Road" required>
+
+                    <label>Description</label>
+
+                    <textarea id="description" placeholder="Describe the problem..." required></textarea>
+
+                    <button class="submit">
+                        Submit Civic Report
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- ISSUE LIST -->
+
+            <section id="issues">
+
+                <div class="card">
+
+                    <h2>📍 Community Issues</h2>
+
+                    <div class="toolbar">
+
+                        <input id="search" type="text" placeholder="Search issues...">
+
+                        <select id="filter">
+
+                            <option value="All">All Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+
+                        </select>
+
+                    </div>
+
+                    <div id="issueList"></div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        <h3>CivicTrack 🏙️</h3>
+
+        <p>
+            Technology for cleaner, safer and smarter communities.
+        </p>
+
+        <br>
+
+        <small>
+            © 2026 CivicTrack | College Project
+        </small>
+
+    </footer>
+
+
+    <script>
+
+        let issues = JSON.parse(localStorage.getItem("civicIssues")) || [
+
+            {
+                name: "Rahul",
+                category: "🕳️ Pothole",
+                location: "Main Road",
+                description: "Large pothole causing problems for vehicles.",
+                status: "In Progress"
+            },
+
+            {
+                name: "Ananya",
+                category: "🗑️ Garbage",
+                location: "Bus Stand",
+                description: "Garbage has not been collected for several days.",
+                status: "Pending"
+            },
+
+            {
+                name: "Kiran",
+                category: "💡 Streetlight",
+                location: "2nd Cross",
+                description: "Streetlight is not working at night.",
+                status: "Resolved"
+            }
+
+        ];
+
+
+        const form = document.getElementById("issueForm");
+        const list = document.getElementById("issueList");
+        const search = document.getElementById("search");
+        const filter = document.getElementById("filter");
+
+
+        function saveData() {
+
+            localStorage.setItem(
+                "civicIssues",
+                JSON.stringify(issues)
+            );
+
+        }
+
+
+        function updateStats() {
+
+            document.getElementById("total").textContent =
+                issues.length;
+
+            document.getElementById("pending").textContent =
+                issues.filter(i => i.status === "Pending").length;
+
+            document.getElementById("progress").textContent =
+                issues.filter(i => i.status === "In Progress").length;
+
+            document.getElementById("resolved").textContent =
+                issues.filter(i => i.status === "Resolved").length;
+
+        }
+
+
+        function displayIssues() {
+
+            const query =
+                search.value.toLowerCase();
+
+            const selectedStatus =
+                filter.value;
+
+            const filtered =
+                issues.filter(issue => {
+
+                    const matchesSearch =
+                        issue.category.toLowerCase().includes(query) ||
+                        issue.location.toLowerCase().includes(query) ||
+                        issue.description.toLowerCase().includes(query);
+
+                    const matchesStatus =
+                        selectedStatus === "All" ||
+                        issue.status === selectedStatus;
+
+                    return matchesSearch && matchesStatus;
+
+                });
+
+
+            list.innerHTML = "";
+
+
+            if (filtered.length === 0) {
+
+                list.innerHTML = `
+        <div class="empty">
+            🔍 No civic issues found.
+        </div>
+        `;
+
+                return;
+
+            }
+
+
+            filtered.forEach((issue, index) => {
+
+                let statusClass = "";
+
+                if (issue.status === "Resolved") {
+                    statusClass = "resolved";
+                }
+
+                if (issue.status === "In Progress") {
+                    statusClass = "progress";
+                }
+
+
+                list.innerHTML += `
+
+        <div class="issue">
+
+            <div class="issue-top">
+
+                <span class="badge">
+                    ${issue.category}
+                </span>
+
+                <span class="status ${statusClass}">
+                    ${issue.status}
+                </span>
+
+            </div>
+
+            <h3>
+                📍 ${issue.location}
+            </h3>
+
+            <p>
+                ${issue.description}
+            </p>
+
+            <br>
+
+            <small>
+                👤 Reported by ${issue.name}
+            </small>
+
+            <br><br>
+
+            <button
+            onclick="changeStatus(${issues.indexOf(issue)})">
+                Change Status
+            </button>
+
+            <button
+            onclick="deleteIssue(${issues.indexOf(issue)})"
+            style="background:#d9534f;margin-left:5px;">
+                Delete
+            </button>
+
+        </div>
+
+        `;
+
+            });
+
+        }
+
+
+        form.addEventListener("submit", function (e) {
+
+            e.preventDefault();
+
+
+            const newIssue = {
+
+                name:
+                    document.getElementById("name").value,
+
+                category:
+                    document.getElementById("category").value,
+
+                location:
+                    document.getElementById("location").value,
+
+                description:
+                    document.getElementById("description").value,
+
+                status: "Pending"
+
+            };
+
+
+            issues.unshift(newIssue);
+
+            saveData();
+
+            updateStats();
+
+            displayIssues();
+
+            form.reset();
+
+
+            alert(
+                "✅ Civic issue submitted successfully!"
+            );
+
+        });
+
+
+        function changeStatus(index) {
+
+            const statuses = [
+                "Pending",
+                "In Progress",
+                "Resolved"
+            ];
+
+            let current =
+                statuses.indexOf(issues[index].status);
+
+            issues[index].status =
+                statuses[(current + 1) % statuses.length];
+
+            saveData();
+
+            updateStats();
+
+            displayIssues();
+
+        }
+
+
+        function deleteIssue(index) {
+
+            if (
+                confirm(
+                    "Delete this civic issue?"
+                )
+            ) {
+
+                issues.splice(index, 1);
+
+                saveData();
+
+                updateStats();
+
+                displayIssues();
+
+            }
+
+        }
+
+
+        search.addEventListener(
+            "input",
+            displayIssues
+        );
+
+        filter.addEventListener(
+            "change",
+            displayIssues
+        );
+
+
+        updateStats();
+
+        displayIssues();
+
+    </script>
+
+</body>
+
+</html>
